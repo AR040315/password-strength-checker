@@ -1,22 +1,42 @@
-import re
-
 def check_password_strength(password):
-    length_error = len(password) < 8
-    digit_error = re.search(r"\d", password) is None
-    uppercase_error = re.search(r"[A-Z]", password) is None
-    lowercase_error = re.search(r"[a-z]", password) is None
-    symbol_error = re.search(r"[!@#$%^&*(),.?\":{}|<>]", password) is None
 
-    total_errors = sum([length_error, digit_error, uppercase_error, lowercase_error, symbol_error])
+    has_digit = False
+    has_upper = False
+    has_lower = False
+    has_symbol = False
 
-    if total_errors == 0:
+    for ch in password:
+        if ch.isdigit():
+            has_digit = True
+        elif ch.isupper():
+            has_upper = True
+        elif ch.islower():
+            has_lower = True
+        elif ch in "!@#$%^&*":
+            has_symbol = True
+
+    length_ok = len(password) >= 8
+
+    score = 0
+
+    if length_ok:
+        score += 1
+    if has_digit:
+        score += 1
+    if has_upper:
+        score += 1
+    if has_lower:
+        score += 1
+    if has_symbol:
+        score += 1
+
+    if score == 5:
         return "Strong"
-    elif total_errors <= 2:
+    elif score >= 3:
         return "Moderate"
     else:
         return "Weak"
 
-if __name__ == "__main__":
-    password = input("Enter your password: ")
-    strength = check_password_strength(password)
-    print(f"Password Strength: {strength}")
+
+password = input("Enter your password: ")
+print("Password Strength:", check_password_strength(password))
